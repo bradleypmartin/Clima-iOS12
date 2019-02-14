@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import Keys
 
 class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     
@@ -85,7 +86,11 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
             let latitude = location.coordinate.latitude
             let longitude = location.coordinate.longitude
             
-            let params : [String : String] = ["lat" : String(latitude), "lon" : String(longitude), "appid" : APP_ID]
+            let apiKey = ClimaKeys().openWeatherMapAPIKey
+            
+            let params : [String : String] = ["lat" : String(latitude), "lon" : String(longitude), "appid" : apiKey]
+            
+            print(params)
         }
         
     }
