@@ -12,11 +12,11 @@ import Keys
 import Alamofire
 import SwiftyJSON
 
-class WeatherViewController: UIViewController, CLLocationManagerDelegate {
+class WeatherViewController: UIViewController, CLLocationManagerDelegate, ChangeCityDelegate {
     
     //Constants
     let WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
-    let APP_ID = "TBDENVVAR"
+    let APP_ID = ClimaKeys().openWeatherMapAPIKey
 
     //TODO: Declare instance variables here
     let locationManager = CLLocationManager()
@@ -92,7 +92,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     //Write the updateUIWithWeatherData method here:
     func updateUIWithWeatherData() {
         cityLabel.text = weatherDataModel.city
-        temperatureLabel.text = "\(weatherDataModel.temperature)"
+        temperatureLabel.text = "\(weatherDataModel.temperature)°"
         weatherIcon.image = UIImage(named: weatherDataModel.weatherIconName)
     }
     
@@ -115,9 +115,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
             let latitude = location.coordinate.latitude
             let longitude = location.coordinate.longitude
             
-            let apiKey = ClimaKeys().openWeatherMapAPIKey
             
-            let params : [String : String] = ["lat" : String(latitude), "lon" : String(longitude), "appid" : apiKey]
+            
+            let params : [String : String] = ["lat" : String(latitude), "lon" : String(longitude), "appid" : APP_ID]
             
             getWeatherData(url: WEATHER_URL, parameters: params)
         }
@@ -139,11 +139,18 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     
     
     //Write the userEnteredANewCityName Delegate method here:
-    
-
+    func userEnteredANewCityName(city: String) {
+        let params : [String : String] = ["q" : city, "appid" : APP_ID]
+        getWeatherData(url: WEATHER_URL, parameters: params)
+    }
     
     //Write the PrepareForSegue Method here
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "changeCityName" {
+            let destinationVC = segue.destination as! ChangeCityViewController
+            destinationVC.delegate = self
+        }
+    }
     
     
     
